@@ -5,6 +5,8 @@ import pro1.DataSource;
 import pro1.apiDataModel.ActionsList;
 import pro1.reports.report2.reportDataModel.DepartmentStats;
 
+import java.util.Arrays;
+
 public class DepartmentStatsReporting {
     public static DepartmentStats GetReport(DataSource dataSource, String rok, String katedra) {
         var actionsListJson = dataSource.getRozvrhByKatedra(rok, katedra);
@@ -20,22 +22,46 @@ public class DepartmentStatsReporting {
     private static int maxActionStudentsCount(ActionsList actionsList) {
         // TODO 2.0: Doplň potřebné atributy do třídy apiDataModel.Action
         // TODO 2.1: Doplň: maximální počet přihlášených studentů na rozvrhové akci
-        return 50;
+
+        var result = actionsList.items
+                .stream()
+                .mapToInt(a->a.studentCount)
+                .max()
+                .orElse(-1);
+        return result;
     }
 
     private static int emptyActionsCount(ActionsList actionsList) {
         // TODO 2.2: Doplň: počet rozvrhových akcí s 0 studenty
-        return 60;
+        var result = actionsList.items
+                .stream()
+                .mapToInt(a->a.studentCount)
+                .filter(a->a==0)
+                .count();
+        return (int)result;
     }
 
 
     private static int maxTeacherScore(ActionsList actionsList) {
         // TODO 2.4: Doplň: nejvyšší výsledek dosažený metodou teacherScore mezi všemi učiteli ve vstupních datech
-        return 70;
+        var teacherIds = actionsList.items
+                .stream()
+                .mapToInt(a->a.teacherID)
+                .distinct();
+        
+        var result = teacherIds
+                .mapToLong(t -> teacherScore(t,actionsList))
+                .max();
+        return (int)result.orElse(0);
     }
 
     private static long teacherScore(long teacherId, ActionsList actionsList) {
         // TODO 2.3: Doplň pomocnou metodu - součet všech přihlášených studentů na akcích daného učitele
-        return 0;
+        var result = actionsList.items
+                .stream()
+                .filter(a->a.teacherID==teacherId)
+                .mapToInt(a->a.studentCount)
+                .sum();
+        return result;
     }
 }
