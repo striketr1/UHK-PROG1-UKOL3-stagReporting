@@ -11,4 +11,6 @@ public interface DataSource {
     public String getTerminyZkousek(String semestr, String zkratka, String katedra);
 
     public String getKvalifikacniPrace(String rok, String katedra);
+
+    public String getTerminyZkousek2(String katedra);
 }

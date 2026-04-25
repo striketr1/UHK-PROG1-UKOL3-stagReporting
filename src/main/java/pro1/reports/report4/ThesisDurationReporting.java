@@ -15,9 +15,9 @@ public class ThesisDurationReporting {
     public static Object[] GetReport(DataSource dataSource, String katedra, String[] years) {
         DepartmentStats[] stats = new DepartmentStats[years.length];
         for (int i = 0; i < years.length; i++) {
-            var actionsListJson = dataSource.getKvalifikacniPrace(years[i], katedra);
-            var actionsList = new Gson().fromJson(actionsListJson, ThesisList.class);
-            stats[i] = new DepartmentStats(years[i], duration(actionsList));
+            var thesisListJson = dataSource.getKvalifikacniPrace(years[i], katedra);
+            var thesisList = new Gson().fromJson(thesisListJson, ThesisList.class);
+            stats[i] = new DepartmentStats(years[i], duration(thesisList));
         }
         return stats;
     }
